@@ -1,0 +1,82 @@
+* Progressive Dynamite (100pts)
+by DrDoctor
+** Description
+
+Find the minimal sum of numbers on a path from the top left corner to the bottom right corner. You can only go right or down in each move.
+
+** Attachments
+
+https://ctf.k3rn3l4rmy.com/kernelctf-distribution-challs/Progressive-Dynamite/challenge.txt
+
+** Walk Through
+The file `challenge.txt` provides a huge nested list. The method to solve this challenge becomes quite clear in the description. 
+it needs the minimum of all the sums on the matrix. This is a [[https://en.wikipedia.org/wiki/Dynamic_programming][Dynamic Programming challenge]]. 
+
+Python is just perfect for this task, so we will create a py file and read the data from the [[https://ctf.k3rn3l4rmy.com/kernelctf-distribution-challs/Progressive-Dynamite/challenge.txt][challenge.txt]]
+
+one way is with the *json* module. (another is using [[https://stackoverflow.com/a/1894296][ast]])
+
+``` python3
+import json
+
+with(open('challenge.txt', 'r')) as f:                                                                        
+    dp = json.loads(f.read()
+    print(dp)
+```
+
+from here we can get the size of the matrix and the size of each list
+
+``` python3
+print(len(dp)) # res: 100
+print(len(dp[0]0) # res: 100
+```
+
+Because of the huge size of the matrix and the size of the actual numbers i am going to create a test data to test my script
+
+i used 
+
+|  1 | 1 |  5 |
+| 10 | 5 | 30 |
+| 31 | 5 | 50 |
+
+Obviously the minimal should be 1+1+5+5+50 = 62
+you can use also negative number for your test
+
+first will calculate all the first row
+then all the matrix[row][0]
+
+|  1 | 2 |  7 |
+| 11 | 5 | 30 |
+| 42 | 5 | 50 |
+
+and finally another loop will calculate all the minimals.
+This will walk through and dp[i][j] will be the number of the min path. 
+
+``` python3
+for i in range(1,r):                                                                                           
+    for j in range(1,c):                                                                                       
+       dp[i][j] += min(dp[i-1][j],dp[i][j-1])
+
+```
+
+The bottom right now should contain the sum of the path with the minimal sum
+
+``` python3
+print(dp[-1][-1])
+```
+
+Now replace the *test data* with the *actual* and run the script
+Returns a decimal.
+
+** Decode the decimal
+i tried to submit the flag with the decimal number but it wasnt accepted
+the hit i got was *now how are flags typically converted to numbers?*
+And i had no idea. 
+
+first i tried a few things in [[https://gchq.github.io/CyberChef/][CyberChef]]
+_CyberChef_ is powerful but i could figure out what modules to use. i still havent found the recipe.
+However going to https://www.rapidtables.com/convert/number/decimal-to-hex.html gives me the right hex. 
+then either in _rapidtables_ or _CyberCher_ converts this to ascii and you get the flag.
+
+Use *from_hex* on _cyberCher_ and *hex to ascii* in other case
+ 
